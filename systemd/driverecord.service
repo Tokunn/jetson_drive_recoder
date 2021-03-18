@@ -1,0 +1,11 @@
+[Unit]
+Description=launch drive recorder app
+
+[Service]
+User=rebecca
+Environment=DISPLAY=:0.0
+ExecStart=/home/rebecca/Documents/jetson_drive_recoder/recorder_main.py
+Restart=always
+
+[Install]
+WantedBy=user@.service
