@@ -10,16 +10,22 @@ from glob import glob
 SPLIT_TIME_SEC = 300
 DISK_USAGE_MAX = 80
 
+  # ! video/x-raw(memory:NVMM), width=3264, height=1848, format=(string)NV12, framerate=(fraction)21/1 \
+  # ! video/x-raw(memory:NVMM), width=1280, height=720, format=(string)NV12, framerate=(fraction)120/1 \
+  # ! nvvidconv ! video/x-raw, width=(int)1920, height=(int)1080, format=(string)BGRx \
+  # ! nvvidconv ! video/x-raw, width=(int)1280, height=(int)720, format=(string)BGRx \
 GST_STR_CAM =  'nvarguscamerasrc \
   ! video/x-raw(memory:NVMM), width=3264, height=1848, format=(string)NV12, framerate=(fraction)21/1 \
-  ! nvvidconv ! video/x-raw, width=(int)1920, height=(int)1080, format=(string)BGRx \
+  ! nvvidconv ! video/x-raw, width=(int)1280, height=(int)720, format=(string)BGRx \
   ! videoconvert \
   ! appsink'
 
+  # ! video/x-h264, width=(int)1920, height=(int)1080, framerate=(fraction)21/1, stream-format=(string)byte-stream \
+  # ! video/x-h264, width=(int)1280, height=(int)720, framerate=(fraction)120/1, stream-format=(string)byte-stream \
 GST_STR_264 = 'appsrc \
   ! autovideoconvert \
   ! omxh264enc \
-  ! video/x-h264, width=(int)1920, height=(int)1080, framerate=(fraction)21/1, stream-format=(string)byte-stream \
+  ! video/x-h264, width=(int)1280, height=(int)720, framerate=(fraction)120/1, stream-format=(string)byte-stream \
   ! h264parse \
   ! qtmux \
   ! filesink location=movie/fr_{}.mp4'
@@ -38,7 +44,8 @@ def main():
                 print(old_movie, "deleted")
 
         file_name = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-        out = cv2.VideoWriter(GST_STR_264.format(file_name), cv2.CAP_GSTREAMER, 0, 21.0, (1920, 1080))
+        out = cv2.VideoWriter(GST_STR_264.format(file_name), cv2.CAP_GSTREAMER, 0, 120.0, (1280, 720))
+        # out = cv2.VideoWriter(GST_STR_264.format(file_name), cv2.CAP_GSTREAMER, 0, 21.0, (1920, 1080))
 
         start_time = time.time()
         while (time.time() - start_time) < SPLIT_TIME_SEC:
